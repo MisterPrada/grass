@@ -6,38 +6,23 @@ import Debug from '@experience/Utils/Debug.js'
 import State from "@experience/State.js";
 
 import {
-    scaleWithCenter, directionalBlur, hash21, terrainHeight, noise, bezier, bezierGrad, rotateY,
-    rotateAxis, murmurHash21, _hash, easeOut, hemiLight, phongSpecular, lambertLight
+    noise, bezier, bezierGrad, rotateY,
+    rotateAxis, _hash, easeOut, hemiLight, phongSpecular, lambertLight
 } from '@experience/Utils/TSL-utils.js'
 
 import {
-    sin, positionLocal, time, vec2, vec3, vec4, uv, uniform, color, fog, rangeFogFactor, texture, If, min, range,
-    instanceIndex, timerDelta, step, timerGlobal, mix, max, uint, cond, varying, varyingProperty, Fn,
-    struct, output, emissive, diffuseColor, PI, PI2, oneMinus, cos, atan, float, pass, mrt, assign, normalize,
-    mul, log2, length, pow, smoothstep, screenUV, distance,
-    instancedArray, instancedBufferAttribute, attribute, attributeArray, pointUV, select, equals, deltaTime, oscSine,
-    hash, materialColor, mx_fractal_noise_vec4, mx_noise_vec4, abs, modelViewMatrix, clamp, fwidth, convertToTexture,
-    viewportLinearDepth, viewportDepthTexture, cameraViewMatrix, rand, mx_rgbtohsv, mx_hsvtorgb, equal, Discard,
-    vertexIndex, floor, Loop, normalGeometry, int, cameraProjectionMatrix, modelWorldMatrix, saturate, remap, sub, mat2,
-    mat3, uvec2, cameraPosition, dot, ivec4, add, cross, acos
+    sin, time, vec2, vec3, vec4, uv, uniform, color, texture, If,
+    instanceIndex, mix, varying, Fn, cos, float, normalize, pow, smoothstep,
+    distance, instancedArray, select, abs, modelViewMatrix, Discard, vertexIndex, int,
+    cameraProjectionMatrix, modelWorldMatrix, saturate, remap, sub, mat2, mat3, cameraPosition,
+    dot, cross
 
 } from 'three/tsl'
 
 import { TextureAtlas } from '@experience/Utils/Helpers/TextureAtlas.js'
-import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-
-THREE.Mesh.prototype.raycast = acceleratedRaycast;
-
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
 
-
-import { curlNoise4d } from "@experience/TSL/curlNoise4d.js";
-import { simplexNoise4d } from "@experience/TSL/simplexNoise4d.js"
-
-import { linearStep } from '@experience/TSL/linearStep.js'
-
 const NUM_GRASS = 128 * 1024;
-//const NUM_GRASS = 128 * 20;
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = ( GRASS_SEGMENTS + 1 ) * 2;
 const GRASS_PATCH_SIZE = 10;
@@ -75,12 +60,6 @@ export default class Grass extends Model {
         vGrassType: varying( int( 0 ) ),
         vGrassSide: varying( float( 0 ) ),
     }
-
-    // vColour.assign( mix( BASE_COLOUR, TIP_COLOUR, heightPercent ) );
-    // vColour.assign( mix( vec3( 1.0, 0.0, 0.0 ), vColour, stiffness ) );
-    // vNormal.assign( normalize( modelMatrix.mul( vec4( grassLocalNormal, 0.0 ) ).xyz ) );
-    // vWorldPosition.assign( modelMatrix.mul( vec4( grassLocalPosition, 1.0 ) ).xyz );
-    // vGrassData.assign( vec4( x, heightPercent, xSide, grassType ) );
 
     constructor( parameters = {} ) {
         super()
@@ -377,9 +356,6 @@ export default class Grass extends Model {
             const lighting = vec3( diffuseLighting.mul( 0.5 ).add( ambientLighting.mul( 0.5 ) ) ).toVar();
             const colour = vec3( baseColour.xyz.mul( ambientLighting ).add( specular.mul( 0.25 ) ) ).toVar();
             colour.mulAssign( ao );
-
-            // colour.assign( lighting );
-            // colour.assign( vColour );
 
             return vec4( pow( colour, vec3( 1.0 / 2.2 ) ), 1.0 )
         } )()
